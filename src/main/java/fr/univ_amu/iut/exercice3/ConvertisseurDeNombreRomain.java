@@ -47,6 +47,122 @@ public class ConvertisseurDeNombreRomain {
     //
     // Pour les exceptions : une soustraction est valide seulement pour
     // I avant V/X, X avant L/C, C avant D/M. Tout le reste est invalide.
-    return total;
+
+    // if (chiffreRomain == "I") {
+    // return 1;
+    // } else if (chiffreRomain == "II") {
+    // return 2;
+    // } else if (chiffreRomain == "III") {
+    // return 3;
+    // } else if (chiffreRomain == "V") {
+    // return 5;
+    // }
+    // return total;
+
+    // switch (chiffreRomain) {
+    // case "I":
+    // total = 1;
+    // break;
+    // case "II":
+    // total = 2;
+    // break;
+    // case "III":
+    // total = 3;
+    // break;
+    // case "V":
+    // total = 5;
+    // break;
+    // case "VI":
+    // total = 6;
+    // break;
+    // case "X":
+    // total = 10;
+    // break;
+    // case "L":
+    // total = 50;
+    // break;
+    // case "C":
+    // total = 100;
+    // break;
+    // case "D":
+    // total = 500;
+    // break;
+    // case "M":
+    // total = 1000;
+    // break;
+    // default:
+    // return total;
+    // }
+    // return total;
+
+    // Soustractions valides uniquement :
+    // I avant V/X ;
+    // X avant L/C ;
+    // C avant D/M.
+    // Toute autre combinaison (IL, IC, VX, ...) est invalide et doit lever
+    // IllegalArgumentException.
+
+    // if (chiffreRomain == "Z" | chiffreRomain == "IL") {
+    // throw new IllegalArgumentException();
+    // }
+
+    if (chiffreRomain.length() > 1) {
+
+      for (int i = 0; i < chiffreRomain.length(); i++) {
+
+        if ((i + 1) < chiffreRomain.length()) {
+
+          if ((valeurDe(chiffreRomain.charAt(i))) < (valeurDe(chiffreRomain.charAt(i + 1)))) {
+
+            // Soustractions valides uniquement :
+            // I avant V/X, X avant L/C, C avant D/M. Tout le reste est invalide.
+
+            char plus_petit = chiffreRomain.charAt(i);
+            char plus_grand = chiffreRomain.charAt(i + 1);
+            boolean est_soustraction_valide =
+                (((plus_petit == 'I') && (plus_grand == 'V' || plus_grand == 'X'))
+                    || ((plus_petit == 'X') && (plus_grand == 'L' || plus_grand == 'C'))
+                    || ((plus_petit == 'C') && (plus_grand == 'D' || plus_grand == 'M')));
+
+            if (!est_soustraction_valide) {
+              throw new IllegalArgumentException(
+                  plus_petit + " et " + plus_grand + " ne sont pas une soustraction valide !");
+            }
+            total += ((valeurDe(plus_grand)) - (valeurDe(plus_petit)));
+            i++;
+          } else {
+            total += (valeurDe(chiffreRomain.charAt(i)));
+          }
+
+        } else if ((i + 1) >= chiffreRomain.length()) {
+          total += (valeurDe(chiffreRomain.charAt(i)));
+        }
+      }
+      return total;
+
+    } else { // (chiffreRomain.length() <= 1) cad: un seul caractere
+      return total = valeurDe(chiffreRomain.charAt(0)); // return le valeur du caractere
+    }
+  }
+
+  public int valeurDe(char symbole) {
+    switch (symbole) {
+      case 'I':
+        return 1;
+      case 'V':
+        return 5;
+      case 'X':
+        return 10;
+      case 'L':
+        return 50;
+      case 'C':
+        return 100;
+      case 'D':
+        return 500;
+      case 'M':
+        return 1000;
+      default:
+        throw new IllegalArgumentException(symbole + "n'est pas valide !");
+    }
   }
 }
