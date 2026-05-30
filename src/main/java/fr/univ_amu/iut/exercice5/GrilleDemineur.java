@@ -44,6 +44,57 @@ public class GrilleDemineur {
   public GrilleDemineur(List<String> grilleInitiale) {
     // TODO exercice 5 : valider l'entrée puis stocker la grille.
     this.grille = grilleInitiale == null ? List.of() : List.copyOf(grilleInitiale);
+    if (grilleInitiale == null) throw new IllegalArgumentException();
+
+    for (String string : grilleInitiale) {
+      String firstLine = grilleInitiale.get(0);
+      String line = string;
+
+      if (string.length() != firstLine.length()) {
+        throw new IllegalArgumentException();
+      }
+      for (char caractere : line.toCharArray()) {
+        if (caractere == ' ' || caractere == '*') continue;
+        else throw new IllegalArgumentException();
+      }
+    }
+  }
+
+  private int countMinesAdj(int NbLigne, int NbColonnes) {
+    int count = 0;
+
+    // if ((grille.get(NbLigne - 1).charAt(NbColonnes) ) == '*'
+    // || grille.get(NbLigne + 1).charAt(NbColonnes)
+    // || grille.get(NbLigne).charAt(NbColonnes - 1)
+    // || grille.get(NbLigne).charAt(NbColonnes + 1)
+    // || grille.get(NbLigne - 1).charAt(NbColonnes + 1)
+    // || grille.get(NbLigne - 1).charAt(NbColonnes - 1)
+    // || grille.get(NbLigne + 1).charAt(NbColonnes + 1)
+    // || grille.get(NbLigne + 1).charAt(NbColonnes - 1)) == '*')
+
+    for (int line = -1; line <= 1; ++line) { // on parcours les voisin de la case courant
+      for (int col = -1; col <= 1; ++col) { // on parcours les voisin de la case courant
+        if (line == 0 && col == 0) // on considere pas la case courant
+        continue;
+        else {
+          int linei = NbLigne + line;
+          int coli = NbColonnes + col;
+
+          if (linei >= grille.size() || linei < 0) { // les cas dehors les bornes
+            continue;
+          } else {
+            String lineAdjacent = grille.get(linei);
+            if (coli >= lineAdjacent.length() || coli < 0) { // les cas dehors les bornes
+              continue;
+            } else if (lineAdjacent.charAt(coli) == '*') {
+              count++;
+            }
+          }
+        }
+      }
+    }
+
+    return count;
   }
 
   /**
@@ -55,13 +106,41 @@ public class GrilleDemineur {
     // TODO exercice 5 : remplir resultat avec une ligne annotée par ligne d'entrée.
     //
     // Pour chaque case (ligne, col) :
-    //   - si c'est une mine ('*'), laisser '*'
-    //   - sinon compter les mines dans les 8 cases voisines (en gérant les bords)
-    //   - si le compte est > 0, écrire ce chiffre
-    //   - si le compte est 0, écrire un espace
+    // - si c'est une mine ('*'), laisser '*'
+    // - sinon compter les mines dans les 8 cases voisines (en gérant les bords)
+    // - si le compte est > 0, écrire ce chiffre
+    // - si le compte est 0, écrire un espace
     //
     // Astuce : une méthode privée compterMinesAdjacentes(int, int) facilite
     // la gestion des bords et rend le code testable.
+
+    // for (String chaine : resultat) {
+    // if (chaine == "*") {
+    // return resultat;
+    // } else
+    // minesTotal = countMinesAdj();
+    // if (minesTotal > 0)
+    // chaine = minesTotal;
+    // else if (minesTotal == 0)
+    // chaine = " ";
+    // }
+
+    for (int i = 0; i < grille.size(); ++i) {
+      String ligne = grille.get(i);
+      StringBuilder annotee = new StringBuilder(ligne.length());
+      for (int j = 0; j < ligne.length(); ++j) {
+        char caractere = ligne.charAt(j);
+        if (caractere == '*') {
+          annotee.append('*');
+        } else {
+          int nBMines = countMinesAdj(i, j);
+          if (nBMines > 0) annotee.append(nBMines); // Integer.toString(nBMines);
+          else annotee.append(' ');
+        }
+      }
+      resultat.add(annotee.toString());
+    }
+
     return resultat;
   }
 }
